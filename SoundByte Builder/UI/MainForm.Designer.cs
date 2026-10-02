@@ -30,6 +30,10 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+            btnClipperSave = new Button();
+            btnClipperSaveAs = new Button();
+            lblClipperVolume = new Label();
+            txtClipperVolume = new TextBox();
             btnStart = new Button();
             btnStop = new Button();
             cmbRecordingMode = new ComboBox();
@@ -50,8 +54,82 @@
             chkApplications = new CheckBox();
             btnApplications = new Button();
             ctxApplications = new ContextMenuStrip(components);
+            tabMain = new TabControl();
+            tabRecorder = new TabPage();
+            tabAudioClipper = new TabPage();
+            tableLayoutPanel4 = new TableLayoutPanel();
+            lblClipperSelection = new Label();
+            tableLayoutPanel3 = new TableLayoutPanel();
+            lblClipperPosition = new Label();
+            tableLayoutPanel1 = new TableLayoutPanel();
+            btnClipperStop = new Button();
+            btnClipperPlayPause = new Button();
+            btnClipperZoomIn = new Button();
+            btnClipperZoomOut = new Button();
+            btnClipperFit = new Button();
+            lblClipperZoom = new Label();
+            hsbClipperWaveform = new HScrollBar();
+            trkClipperPosition = new SeekTrackBar();
+            btnOpenAudio = new Button();
+            txtClipperFile = new TextBox();
+            lblClipperDetails = new Label();
+            clipperWaveform = new WaveformControl();
+            clipperToolTip = new ToolTip(components);
+            clipperPlaybackTimer = new System.Windows.Forms.Timer(components);
             tableLayoutPanel2.SuspendLayout();
+            tabMain.SuspendLayout();
+            tabRecorder.SuspendLayout();
+            tabAudioClipper.SuspendLayout();
+            tableLayoutPanel4.SuspendLayout();
+            tableLayoutPanel3.SuspendLayout();
+            tableLayoutPanel1.SuspendLayout();
+            (trkClipperPosition).BeginInit();
             SuspendLayout();
+            // 
+            // btnClipperSave
+            // 
+            btnClipperSave.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnClipperSave.Enabled = false;
+            btnClipperSave.Location = new Point(343, 3);
+            btnClipperSave.Name = "btnClipperSave";
+            btnClipperSave.Size = new Size(85, 27);
+            btnClipperSave.TabIndex = 18;
+            btnClipperSave.Text = "Save";
+            btnClipperSave.UseVisualStyleBackColor = true;
+            btnClipperSave.Click += btnClipperSave_Click;
+            // 
+            // btnClipperSaveAs
+            // 
+            btnClipperSaveAs.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnClipperSaveAs.Enabled = false;
+            btnClipperSaveAs.Location = new Point(229, 3);
+            btnClipperSaveAs.Name = "btnClipperSaveAs";
+            btnClipperSaveAs.Size = new Size(90, 27);
+            btnClipperSaveAs.TabIndex = 19;
+            btnClipperSaveAs.Text = "Save As...";
+            btnClipperSaveAs.UseVisualStyleBackColor = true;
+            btnClipperSaveAs.Click += btnClipperSaveAs_Click;
+            // 
+            // lblClipperVolume
+            // 
+            lblClipperVolume.Location = new Point(283, 81);
+            lblClipperVolume.Name = "lblClipperVolume";
+            lblClipperVolume.Size = new Size(53, 20);
+            lblClipperVolume.TabIndex = 16;
+            lblClipperVolume.Text = "Volume:";
+            // 
+            // txtClipperVolume
+            // 
+            txtClipperVolume.AccessibleName = "Volume percentage";
+            txtClipperVolume.Enabled = false;
+            txtClipperVolume.Location = new Point(338, 78);
+            txtClipperVolume.Name = "txtClipperVolume";
+            txtClipperVolume.Size = new Size(68, 23);
+            txtClipperVolume.TabIndex = 17;
+            txtClipperVolume.Text = "100%";
+            clipperToolTip.SetToolTip(txtClipperVolume, "Volume 0-200%. 100% is original volume. Type a percentage and press Enter.");
+            txtClipperVolume.KeyDown += txtClipperVolume_KeyDown;
+            txtClipperVolume.Leave += txtClipperVolume_Leave;
             // 
             // btnStart
             // 
@@ -119,7 +197,7 @@
             btnChangeHotkey.MaximumSize = new Size(200, 23);
             btnChangeHotkey.MinimumSize = new Size(100, 23);
             btnChangeHotkey.Name = "btnChangeHotkey";
-            btnChangeHotkey.Size = new Size(100, 23);
+            btnChangeHotkey.Size = new Size(115, 23);
             btnChangeHotkey.TabIndex = 8;
             btnChangeHotkey.Text = "Change Hotkey";
             btnChangeHotkey.UseVisualStyleBackColor = true;
@@ -132,7 +210,7 @@
             txtSaveFolder.MaximumSize = new Size(600, 23);
             txtSaveFolder.MinimumSize = new Size(50, 23);
             txtSaveFolder.Name = "txtSaveFolder";
-            txtSaveFolder.Size = new Size(343, 23);
+            txtSaveFolder.Size = new Size(358, 23);
             txtSaveFolder.TabIndex = 9;
             // 
             // lblSaveFolder
@@ -161,7 +239,7 @@
             // 
             lblStatus.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             lblStatus.AutoSize = true;
-            lblStatus.Location = new Point(47, 323);
+            lblStatus.Location = new Point(47, 389);
             lblStatus.Name = "lblStatus";
             lblStatus.Size = new Size(0, 15);
             lblStatus.TabIndex = 12;
@@ -191,7 +269,7 @@
             tableLayoutPanel2.Controls.Add(btnStart, 0, 0);
             tableLayoutPanel2.Controls.Add(btnStop, 1, 0);
             tableLayoutPanel2.Controls.Add(btnShowRecordings, 2, 0);
-            tableLayoutPanel2.Location = new Point(31, 277);
+            tableLayoutPanel2.Location = new Point(31, 343);
             tableLayoutPanel2.MaximumSize = new Size(419, 31);
             tableLayoutPanel2.Name = "tableLayoutPanel2";
             tableLayoutPanel2.RowCount = 1;
@@ -208,7 +286,7 @@
             cmbMicrophone.MaximumSize = new Size(572, 0);
             cmbMicrophone.MinimumSize = new Size(20, 0);
             cmbMicrophone.Name = "cmbMicrophone";
-            cmbMicrophone.Size = new Size(312, 23);
+            cmbMicrophone.Size = new Size(327, 23);
             cmbMicrophone.TabIndex = 17;
             // 
             // chkIncludeMicrophone
@@ -242,7 +320,7 @@
             btnAudioOutputs.MaximumSize = new Size(572, 23);
             btnAudioOutputs.MinimumSize = new Size(20, 23);
             btnAudioOutputs.Name = "btnAudioOutputs";
-            btnAudioOutputs.Size = new Size(315, 23);
+            btnAudioOutputs.Size = new Size(330, 23);
             btnAudioOutputs.TabIndex = 20;
             btnAudioOutputs.Text = "Select Audio Outputs";
             btnAudioOutputs.UseVisualStyleBackColor = true;
@@ -274,7 +352,7 @@
             btnApplications.MaximumSize = new Size(572, 23);
             btnApplications.MinimumSize = new Size(20, 23);
             btnApplications.Name = "btnApplications";
-            btnApplications.Size = new Size(312, 23);
+            btnApplications.Size = new Size(327, 23);
             btnApplications.TabIndex = 22;
             btnApplications.Text = "Select Applications";
             btnApplications.UseVisualStyleBackColor = true;
@@ -287,42 +365,330 @@
             ctxApplications.Size = new Size(61, 4);
             ctxApplications.Closing += ctxApplications_Closing;
             // 
+            // tabMain
+            // 
+            tabMain.Controls.Add(tabRecorder);
+            tabMain.Controls.Add(tabAudioClipper);
+            tabMain.Dock = DockStyle.Fill;
+            tabMain.Location = new Point(0, 0);
+            tabMain.Name = "tabMain";
+            tabMain.SelectedIndex = 0;
+            tabMain.Size = new Size(494, 447);
+            tabMain.TabIndex = 0;
+            // 
+            // tabRecorder
+            // 
+            tabRecorder.Controls.Add(btnApplications);
+            tabRecorder.Controls.Add(chkApplications);
+            tabRecorder.Controls.Add(btnAudioOutputs);
+            tabRecorder.Controls.Add(chkAudioOutput);
+            tabRecorder.Controls.Add(chkIncludeMicrophone);
+            tabRecorder.Controls.Add(cmbMicrophone);
+            tabRecorder.Controls.Add(tableLayoutPanel2);
+            tabRecorder.Controls.Add(lblStatus);
+            tabRecorder.Controls.Add(btnBrowseFolder);
+            tabRecorder.Controls.Add(lblSaveFolder);
+            tabRecorder.Controls.Add(txtSaveFolder);
+            tabRecorder.Controls.Add(btnChangeHotkey);
+            tabRecorder.Controls.Add(lblHotkey);
+            tabRecorder.Controls.Add(label1);
+            tabRecorder.Controls.Add(cmbRecordingMode);
+            tabRecorder.Location = new Point(4, 24);
+            tabRecorder.Name = "tabRecorder";
+            tabRecorder.Size = new Size(486, 419);
+            tabRecorder.TabIndex = 0;
+            tabRecorder.Text = "Recorder";
+            tabRecorder.UseVisualStyleBackColor = true;
+            // 
+            // tabAudioClipper
+            // 
+            tabAudioClipper.Controls.Add(tableLayoutPanel4);
+            tabAudioClipper.Controls.Add(lblClipperVolume);
+            tabAudioClipper.Controls.Add(txtClipperVolume);
+            tabAudioClipper.Controls.Add(tableLayoutPanel3);
+            tabAudioClipper.Controls.Add(tableLayoutPanel1);
+            tabAudioClipper.Controls.Add(btnClipperZoomIn);
+            tabAudioClipper.Controls.Add(btnClipperZoomOut);
+            tabAudioClipper.Controls.Add(btnClipperFit);
+            tabAudioClipper.Controls.Add(lblClipperZoom);
+            tabAudioClipper.Controls.Add(hsbClipperWaveform);
+            tabAudioClipper.Controls.Add(trkClipperPosition);
+            tabAudioClipper.Controls.Add(btnOpenAudio);
+            tabAudioClipper.Controls.Add(txtClipperFile);
+            tabAudioClipper.Controls.Add(lblClipperDetails);
+            tabAudioClipper.Controls.Add(clipperWaveform);
+            tabAudioClipper.Location = new Point(4, 24);
+            tabAudioClipper.Name = "tabAudioClipper";
+            tabAudioClipper.Size = new Size(486, 419);
+            tabAudioClipper.TabIndex = 1;
+            tabAudioClipper.Text = "Audio Clipper";
+            tabAudioClipper.UseVisualStyleBackColor = true;
+            // 
+            // tableLayoutPanel4
+            // 
+            tableLayoutPanel4.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            tableLayoutPanel4.ColumnCount = 3;
+            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            tableLayoutPanel4.Controls.Add(lblClipperSelection, 0, 0);
+            tableLayoutPanel4.Controls.Add(btnClipperSave, 2, 0);
+            tableLayoutPanel4.Controls.Add(btnClipperSaveAs, 1, 0);
+            tableLayoutPanel4.Location = new Point(20, 369);
+            tableLayoutPanel4.MinimumSize = new Size(0, 33);
+            tableLayoutPanel4.Name = "tableLayoutPanel4";
+            tableLayoutPanel4.RowCount = 1;
+            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel4.Size = new Size(431, 33);
+            tableLayoutPanel4.TabIndex = 20;
+            // 
+            // lblClipperSelection
+            // 
+            lblClipperSelection.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            lblClipperSelection.Location = new Point(3, 0);
+            lblClipperSelection.Name = "lblClipperSelection";
+            lblClipperSelection.Size = new Size(209, 25);
+            lblClipperSelection.TabIndex = 8;
+            lblClipperSelection.Text = "Start: --   End: --   Duration: --";
+            // 
+            // tableLayoutPanel3
+            // 
+            tableLayoutPanel3.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            tableLayoutPanel3.ColumnCount = 3;
+            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120F));
+            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel3.Controls.Add(lblClipperPosition, 1, 0);
+            tableLayoutPanel3.Location = new Point(20, 346);
+            tableLayoutPanel3.Name = "tableLayoutPanel3";
+            tableLayoutPanel3.RowCount = 1;
+            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel3.Size = new Size(431, 21);
+            tableLayoutPanel3.TabIndex = 15;
+            // 
+            // lblClipperPosition
+            // 
+            lblClipperPosition.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            lblClipperPosition.Location = new Point(158, 0);
+            lblClipperPosition.Name = "lblClipperPosition";
+            lblClipperPosition.Size = new Size(114, 18);
+            lblClipperPosition.TabIndex = 7;
+            lblClipperPosition.Text = "00:00.00 / 00:00.00";
+            // 
+            // tableLayoutPanel1
+            // 
+            tableLayoutPanel1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            tableLayoutPanel1.ColumnCount = 4;
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 50F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 50F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel1.Controls.Add(btnClipperStop, 2, 0);
+            tableLayoutPanel1.Controls.Add(btnClipperPlayPause, 1, 0);
+            tableLayoutPanel1.Location = new Point(20, 301);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.RowCount = 1;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel1.Size = new Size(431, 45);
+            tableLayoutPanel1.TabIndex = 14;
+            // 
+            // btnClipperStop
+            // 
+            btnClipperStop.AccessibleName = "Stop";
+            btnClipperStop.Enabled = false;
+            btnClipperStop.Font = new Font("Segoe UI Symbol", 16F);
+            btnClipperStop.Location = new Point(218, 3);
+            btnClipperStop.Name = "btnClipperStop";
+            btnClipperStop.Size = new Size(44, 36);
+            btnClipperStop.TabIndex = 6;
+            btnClipperStop.Text = "■";
+            clipperToolTip.SetToolTip(btnClipperStop, "Stop and return to Start");
+            btnClipperStop.UseVisualStyleBackColor = true;
+            btnClipperStop.Click += btnClipperStop_Click;
+            // 
+            // btnClipperPlayPause
+            // 
+            btnClipperPlayPause.AccessibleName = "Play";
+            btnClipperPlayPause.Enabled = false;
+            btnClipperPlayPause.Font = new Font("Segoe UI Symbol", 16F);
+            btnClipperPlayPause.Location = new Point(168, 3);
+            btnClipperPlayPause.Name = "btnClipperPlayPause";
+            btnClipperPlayPause.Size = new Size(44, 36);
+            btnClipperPlayPause.TabIndex = 5;
+            btnClipperPlayPause.Text = "▶";
+            clipperToolTip.SetToolTip(btnClipperPlayPause, "Play selected audio");
+            btnClipperPlayPause.UseVisualStyleBackColor = true;
+            btnClipperPlayPause.Click += btnClipperPlayPause_Click;
+            // 
+            // btnClipperZoomIn
+            // 
+            btnClipperZoomIn.Enabled = false;
+            btnClipperZoomIn.Location = new Point(20, 75);
+            btnClipperZoomIn.Name = "btnClipperZoomIn";
+            btnClipperZoomIn.Size = new Size(75, 27);
+            btnClipperZoomIn.TabIndex = 9;
+            btnClipperZoomIn.Text = "Zoom In";
+            btnClipperZoomIn.UseVisualStyleBackColor = true;
+            btnClipperZoomIn.Click += btnClipperZoomIn_Click;
+            // 
+            // btnClipperZoomOut
+            // 
+            btnClipperZoomOut.Enabled = false;
+            btnClipperZoomOut.Location = new Point(101, 75);
+            btnClipperZoomOut.Name = "btnClipperZoomOut";
+            btnClipperZoomOut.Size = new Size(75, 27);
+            btnClipperZoomOut.TabIndex = 10;
+            btnClipperZoomOut.Text = "Zoom Out";
+            btnClipperZoomOut.UseVisualStyleBackColor = true;
+            btnClipperZoomOut.Click += btnClipperZoomOut_Click;
+            // 
+            // btnClipperFit
+            // 
+            btnClipperFit.Enabled = false;
+            btnClipperFit.Location = new Point(182, 75);
+            btnClipperFit.Name = "btnClipperFit";
+            btnClipperFit.Size = new Size(50, 27);
+            btnClipperFit.TabIndex = 11;
+            btnClipperFit.Text = "Fit";
+            btnClipperFit.UseVisualStyleBackColor = true;
+            btnClipperFit.Click += btnClipperFit_Click;
+            // 
+            // lblClipperZoom
+            // 
+            lblClipperZoom.Location = new Point(238, 81);
+            lblClipperZoom.Name = "lblClipperZoom";
+            lblClipperZoom.Size = new Size(45, 20);
+            lblClipperZoom.TabIndex = 12;
+            lblClipperZoom.Text = "1x";
+            // 
+            // hsbClipperWaveform
+            // 
+            hsbClipperWaveform.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            hsbClipperWaveform.Enabled = false;
+            hsbClipperWaveform.LargeChange = 10000;
+            hsbClipperWaveform.Location = new Point(20, 225);
+            hsbClipperWaveform.Maximum = 9999;
+            hsbClipperWaveform.Name = "hsbClipperWaveform";
+            hsbClipperWaveform.Size = new Size(431, 17);
+            hsbClipperWaveform.TabIndex = 13;
+            hsbClipperWaveform.Scroll += hsbClipperWaveform_Scroll;
+            // 
+            // trkClipperPosition
+            // 
+            trkClipperPosition.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            trkClipperPosition.Enabled = false;
+            trkClipperPosition.LargeChange = 1000;
+            trkClipperPosition.Location = new Point(20, 250);
+            trkClipperPosition.Maximum = 10000;
+            trkClipperPosition.Name = "trkClipperPosition";
+            trkClipperPosition.Size = new Size(431, 45);
+            trkClipperPosition.SmallChange = 100;
+            trkClipperPosition.TabIndex = 4;
+            trkClipperPosition.TickStyle = TickStyle.None;
+            trkClipperPosition.Scroll += trkClipperPosition_Scroll;
+            // 
+            // btnOpenAudio
+            // 
+            btnOpenAudio.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnOpenAudio.Location = new Point(351, 20);
+            btnOpenAudio.Name = "btnOpenAudio";
+            btnOpenAudio.Size = new Size(100, 27);
+            btnOpenAudio.TabIndex = 1;
+            btnOpenAudio.Text = "Open Audio...";
+            btnOpenAudio.UseVisualStyleBackColor = true;
+            btnOpenAudio.Click += btnOpenAudio_Click;
+            // 
+            // txtClipperFile
+            // 
+            txtClipperFile.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            txtClipperFile.Location = new Point(20, 22);
+            txtClipperFile.Name = "txtClipperFile";
+            txtClipperFile.PlaceholderText = "No audio selected";
+            txtClipperFile.ReadOnly = true;
+            txtClipperFile.Size = new Size(321, 23);
+            txtClipperFile.TabIndex = 0;
+            // 
+            // lblClipperDetails
+            // 
+            lblClipperDetails.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            lblClipperDetails.Location = new Point(20, 50);
+            lblClipperDetails.Name = "lblClipperDetails";
+            lblClipperDetails.Size = new Size(431, 22);
+            lblClipperDetails.TabIndex = 2;
+            lblClipperDetails.Text = "WAV recordings supported";
+            // 
+            // clipperWaveform
+            // 
+            clipperWaveform.AccessibleName = "Recording waveform";
+            clipperWaveform.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            clipperWaveform.BackColor = Color.WhiteSmoke;
+            clipperWaveform.ForeColor = Color.SteelBlue;
+            clipperWaveform.Location = new Point(20, 110);
+            clipperWaveform.Name = "clipperWaveform";
+            clipperWaveform.Size = new Size(431, 110);
+            clipperWaveform.TabIndex = 3;
+            clipperToolTip.SetToolTip(clipperWaveform, "Drag the horizontal line up/down for volume. Wheel: zoom. Shift + wheel: scroll.");
+            clipperWaveform.SeekRequested += clipperWaveform_SeekRequested;
+            clipperWaveform.SelectionChanged += clipperWaveform_SelectionChanged;
+            clipperWaveform.VolumeChanged += clipperWaveform_VolumeChanged;
+            clipperWaveform.ViewChanged += clipperWaveform_ViewChanged;
+            // 
+            // clipperPlaybackTimer
+            // 
+            clipperPlaybackTimer.Tick += clipperPlaybackTimer_Tick;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(471, 361);
-            Controls.Add(btnApplications);
-            Controls.Add(chkApplications);
-            Controls.Add(btnAudioOutputs);
-            Controls.Add(chkAudioOutput);
-            Controls.Add(chkIncludeMicrophone);
-            Controls.Add(cmbMicrophone);
-            Controls.Add(tableLayoutPanel2);
-            Controls.Add(lblStatus);
-            Controls.Add(btnBrowseFolder);
-            Controls.Add(lblSaveFolder);
-            Controls.Add(txtSaveFolder);
-            Controls.Add(btnChangeHotkey);
-            Controls.Add(lblHotkey);
-            Controls.Add(label1);
-            Controls.Add(cmbRecordingMode);
+            ClientSize = new Size(494, 447);
+            Controls.Add(tabMain);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            MinimumSize = new Size(341, 365);
+            MinimumSize = new Size(465, 463);
             Name = "MainForm";
             Text = "SoundByte Builder";
             Load += MainForm_Load;
             tableLayoutPanel2.ResumeLayout(false);
             tableLayoutPanel2.PerformLayout();
+            tabMain.ResumeLayout(false);
+            tabRecorder.ResumeLayout(false);
+            tabRecorder.PerformLayout();
+            tabAudioClipper.ResumeLayout(false);
+            tabAudioClipper.PerformLayout();
+            tableLayoutPanel4.ResumeLayout(false);
+            tableLayoutPanel3.ResumeLayout(false);
+            tableLayoutPanel1.ResumeLayout(false);
+            (trkClipperPosition).EndInit();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
 
+        private TabControl tabMain;
+        private TabPage tabRecorder;
+        private TabPage tabAudioClipper;
+        private WaveformControl clipperWaveform;
+        private Button btnOpenAudio;
+        private TextBox txtClipperFile;
+        private Label lblClipperDetails;
+        private Button btnClipperPlayPause;
+        private Button btnClipperStop;
+        private SeekTrackBar trkClipperPosition;
+        private Label lblClipperPosition;
+        private Label lblClipperSelection;
+        private Button btnClipperZoomIn;
+        private Button btnClipperZoomOut;
+        private Button btnClipperFit;
+        private Label lblClipperZoom;
+        private HScrollBar hsbClipperWaveform;
+        private ToolTip clipperToolTip;
+        private Label lblClipperVolume;
+        private TextBox txtClipperVolume;
+        private Button btnClipperSave;
+        private Button btnClipperSaveAs;
+        private System.Windows.Forms.Timer clipperPlaybackTimer;
         private Button btnStart;
         private Button btnStop;
-        private ComboBox cmbAudioDevice;
         private ComboBox cmbRecordingMode;
         private Label label1;
         private Label lblHotkey;
@@ -341,5 +707,8 @@
         private CheckBox chkApplications;
         private Button btnApplications;
         private ContextMenuStrip ctxApplications;
+        private TableLayoutPanel tableLayoutPanel1;
+        private TableLayoutPanel tableLayoutPanel3;
+        private TableLayoutPanel tableLayoutPanel4;
     }
 }
