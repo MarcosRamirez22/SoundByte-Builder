@@ -187,7 +187,6 @@ Audio processing lives in `Audio`, UI controls and layout in `UI`, keyboard hand
 Possible future improvements include:
 
 - UI color, icon, and visual polish
-- Code signing for published releases
 - Per-source recording volume controls
 - More advanced microphone controls
 - Improved multi-source mixing controls
