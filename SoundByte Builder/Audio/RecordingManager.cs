@@ -8,7 +8,8 @@ namespace SoundByte_Builder.Audio
     {
         private class OutputRecordingSource
         {
-            public WasapiLoopbackCapture? Capture { get; set; }
+            public WasapiRecorder? Capture { get; set; }
+            public CaptureDataAvailableHandler? DataHandler { get; set; }
             public WaveFileWriter? Writer { get; set; }
             public string TemporaryPath { get; set; } = "";
             public bool Stopped { get; set; }
@@ -33,7 +34,7 @@ namespace SoundByte_Builder.Audio
         private readonly List<OutputRecordingSource> outputSources = new();
         private readonly List<ApplicationRecordingSource> applicationSources = new();
 
-        private WasapiCapture? microphoneCapture;
+        private WasapiRecorder? microphoneCapture;
         private WaveFileWriter? microphoneWriter;
 
         private string? microphoneTemporaryPath;
@@ -153,9 +154,10 @@ namespace SoundByte_Builder.Audio
                             );
 
                         var capture =
-                            new WasapiLoopbackCapture(
-                                device
-                            );
+                            new WasapiRecorderBuilder()
+                                .WithDevice(device)
+                                .WithLoopbackCapture()
+                                .Build();
 
                         var writer =
                             new WaveFileWriter(
@@ -172,8 +174,8 @@ namespace SoundByte_Builder.Audio
                                 Stopped = false
                             };
 
-                        capture.DataAvailable +=
-                            OutputCapture_DataAvailable;
+                        source.DataHandler = (buffer, flags, devicePosition, qpcPosition) => source.Writer?.Write(buffer);
+                        capture.DataAvailable += source.DataHandler;
 
                         capture.RecordingStopped +=
                             OutputCapture_RecordingStopped;
@@ -187,9 +189,9 @@ namespace SoundByte_Builder.Audio
                 if (includeMicrophone)
                 {
                     microphoneCapture =
-                        new WasapiCapture(
-                            microphoneDevice!
-                        );
+                        new WasapiRecorderBuilder()
+                            .WithDevice(microphoneDevice!)
+                            .Build();
 
                     microphoneWriter =
                         new WaveFileWriter(
@@ -221,13 +223,18 @@ namespace SoundByte_Builder.Audio
 
                         WasapiRecorder recorder =
                             await Task.Run(async () =>
-                                await new WasapiRecorderBuilder()
+                            {
+                                if (!OperatingSystem.IsWindowsVersionAtLeast(10, 0, 19041))
+                                {
+                                    throw new PlatformNotSupportedException("Application recording requires Windows 10 version 2004 or later. Use audio output or microphone recording on older Windows versions.");
+                                }
+                                return await new WasapiRecorderBuilder()
                                     .WithProcessLoopback(
                                         (uint)application.ProcessId,
                                         ProcessLoopbackMode.IncludeTargetProcessTree
                                     )
-                                    .BuildAsync()
-                            );
+                                    .BuildAsync();
+                            });
 
                         var writer =
                             new WaveFileWriter(
@@ -387,35 +394,13 @@ namespace SoundByte_Builder.Audio
             }
         }
 
-        private void OutputCapture_DataAvailable(
-            object? sender,
-            WaveInEventArgs e)
-        {
-            OutputRecordingSource? source =
-                outputSources.FirstOrDefault(
-                    item =>
-                        ReferenceEquals(
-                            item.Capture,
-                            sender
-                        )
-                );
-
-            source?.Writer?.Write(
-                e.Buffer,
-                0,
-                e.BytesRecorded
-            );
-        }
-
         private void MicrophoneCapture_DataAvailable(
-            object? sender,
-            WaveInEventArgs e)
+            ReadOnlySpan<byte> buffer,
+            AudioClientBufferFlags flags,
+            long devicePosition,
+            long qpcPosition)
         {
-            microphoneWriter?.Write(
-                e.Buffer,
-                0,
-                e.BytesRecorded
-            );
+            microphoneWriter?.Write(buffer);
         }
 
         private void OutputCapture_RecordingStopped(
@@ -442,7 +427,7 @@ namespace SoundByte_Builder.Audio
             if (source.Capture != null)
             {
                 source.Capture.DataAvailable -=
-                    OutputCapture_DataAvailable;
+                    source.DataHandler;
 
                 source.Capture.RecordingStopped -=
                     OutputCapture_RecordingStopped;
@@ -794,7 +779,7 @@ namespace SoundByte_Builder.Audio
 
                 string baseName =
                     Path.GetFileNameWithoutExtension(
-                        finalFilePath
+                        finalFilePath ?? string.Empty
                     );
 
                 for (int i = 0;
@@ -863,7 +848,7 @@ namespace SoundByte_Builder.Audio
                 if (source.Capture != null)
                 {
                     source.Capture.DataAvailable -=
-                        OutputCapture_DataAvailable;
+                        source.DataHandler;
 
                     source.Capture.RecordingStopped -=
                         OutputCapture_RecordingStopped;
